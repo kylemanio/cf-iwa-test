@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Controlled Frame Test</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="./styles.css" />
+  <script src="./logger.js" defer></script>
+  <script src="./index.js" defer></script>
+  <!--To keep the manifest as it is instead of making it part of any bundles–->
+  <!-- webpackIgnore: true -->
+  <link rel="manifest" href="./.well-known/manifest.webmanifest">
+</head>
+<body>
+
+  <div class="app-container">
+    <div class="app-content">
+
+      <div>
+        <h3 style="text-align: center;">Controlled Frame Test</h3>
+      </div>
+      <div class="controlled-frame-options">
+        <div id="capture-results">
+          <h3 >Capture Results:</h3>
+          <div id="captures">
+          </div>
+        </div>
+
+        <div style="flex-grow: 1">
+          <h3>Logs:</h3>
+          <ul id="logs" class="log"></ul>
+        </div> 
+
+        <!-- <div class="controlled-frame-options-columns">
+          <div class="controlled-frame-options-column">
+      
+            <!-- <button id="init-cf">Initialize Controlled Frame</button>
+            <button id="uninit-cf" disabled>Uninitialize Controlled Frame</button
+            <button id="capture" disabled>Capture</button>
+            <button id="load_example_bar" disabled>Load https://example.com/bar</button>
+            <button id="load_home" disabled>Home</button>
+            <!-- <button id="fullscreen" disabled>Fullscreen</button> 
+            <button id="back" disabled>Back</button>
+            <button id="reload-cf" disabled>Reload</button>
+            <button id="forward" disabled>Forward</button>
+          </div>
+          <div class="controlled-frame-options-column">
+            <label for="color">Background Color</label>
+            <input type="color" disabled id="color" name="color" value="#ffffff" />
+            <!-- <button id="capture" disabled>Capture</button> 
+            <button id="execute" disabled>Execute Script</button>
+            <!-- <button id="reload-cf" disabled>Reload</button> 
+            <button id="block-requests" disabled>Block Requests</button>
+            <button id="modify-request-headers" disabled>Modify Headers</button>
+          </div>
+        </div>-->
+      </div> 
+
+
+      <section class="tab-container">
+        <div class="tab-bar">
+          <button class="tab-link active" data-tab="cf1">Tab 1</button>
+          <button class="tab-link" data-tab="cf2">Tab 2</button>
+          <button class="tab-link" data-tab="cf3">Tab 3</button>
+        </div>
+
+        <div class="view-controls">
+          <!-- <input type="color" disabled id="color" name="color" value="#ffffff" /> -->
+          <button id="execute" disabled>Execute Script</button>
+          <button id="block-requests" disabled>Block Requests</button>
+          <button id="modify-request-headers" disabled>Modify Headers</button>
+          <button id="capture" disabled>Capture</button>
+          <button id="back" disabled>Back</button>
+          <button id="reload-cf" disabled>Reload</button>
+          <button id="forward" disabled>Forward</button>
+    
+        </div>
+        <div class="view-controls">
+          <button id="splitview-btn">Toggle Split View</button>
+          <button id="fullscreen-btn">Toggle Full Screen</button>
+        </div>
+
+        <div class="content-container">
+            <controlledframe id="cf1" class="tab-content" src="https://example.com"></controlledframe>
+            <controlledframe id="cf2" class="tab-content" src="https://www.google.com/intl/en/about/our-story/"></controlledframe>
+            <controlledframe id="cf3" class="tab-content" src="https://meldcx.com"></controlledframe>
+        </div>
+      </section>
+    </div>
+  </div>
+
+
+</body>
+</html>

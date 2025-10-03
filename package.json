@@ -1,0 +1,28 @@
+{
+  "devDependencies": {
+    "wbn": "^0.0.9",
+    "wbn-sign": "^0.2.1",
+    "webbundle-webpack-plugin": "^0.2.0",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4"
+  },
+  "scripts": {
+    "build": "webpack"
+  },
+  "dependencies": {
+    "dotenv": "^16.3.1"
+  },
+  "name": "cf-iwa-test",
+  "version": "1.0.5",
+  "main": "webpack.config.js",
+  "author": "msw@chromium.org",
+  "license": "Apache-2.0",
+  "description": "Controlled Frame IWA Test",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:kylemanio/cf-iwa-test.git"
+  },
+  "keywords": [
+    "IWA"
+  ]
+}

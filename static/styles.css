@@ -1,0 +1,403 @@
+/* div { margin-bottom:6px; } */
+h3 {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  color: rgb(21, 101, 189);
+}
+
+body {
+  font-family: sans-serif;
+  margin: 0;
+}
+
+input,
+select {
+  font-size: 16px;
+}
+
+.header {
+  width: 100%;
+  app-region: drag;
+  -webkit-app-region: drag;
+}
+
+.displaymode-fullscreen {
+  display: none;
+}
+.displaymode-standalone {
+  display: none;
+}
+.displaymode-minimal-ui {
+  display: none;
+}
+.displaymode-browser {
+  display: none;
+}
+.displaymode-window-controls-overlay {
+  display: none;
+}
+.displaymode-borderless {
+  display: none;
+}
+
+/* React on display mode changes. */
+@media (display-mode: fullscreen) {
+  .displaymode-fullscreen {
+    display: inline;
+  }
+}
+@media (display-mode: standalone) {
+  .displaymode-standalone {
+    display: inline;
+  }
+}
+@media (display-mode: minimal-ui) {
+  .displaymode-minimal-ui {
+    display: inline;
+  }
+}
+@media (display-mode: browser) {
+  .displaymode-browser {
+    display: inline;
+  }
+}
+@media (display-mode: window-controls-overlay) {
+  .displaymode-window-controls-overlay {
+    display: inline;
+  }
+}
+@media (display-mode: borderless) {
+  .displaymode-borderless {
+    display: inline;
+  }
+}
+
+.permissionstatus {
+  display: inline;
+}
+
+.htmlfullscreen-none {
+  display: inline;
+}
+.htmlfullscreen-fullscreen {
+  display: none;
+}
+:fullscreen {
+  .htmlfullscreen-none {
+    display: none;
+  }
+  .htmlfullscreen-fullscreen {
+    display: inline;
+  }
+}
+
+.appregion-draggable {
+  display: none;
+  app-region: drag;
+  -webkit-app-region: drag;
+  border-style: solid;
+}
+.appregion-other {
+  display: inline;
+}
+@media (display-mode: window-controls-overlay), (display-mode: borderless) {
+  .appregion-draggable {
+    display: inline;
+  }
+  .appregion-other {
+    display: none;
+  }
+}
+
+#activationState {
+  display: inline;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: row;
+  gap: 1em;
+  height: 100vh;
+}
+
+.app-content {
+  width: 100%;
+  margin: 0em 1em;
+}
+
+#logs {
+  border:1px solid #ccc;
+  border-radius: 8px;
+  height: 300px;
+  /* width: 80vw; */
+  overflow: auto;
+}
+
+.top-menu {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1em;
+}
+
+h1,
+h2,
+strong {
+  color: rgb(21, 101, 189);
+}
+
+.test-container {
+  display: flex;
+  justify-content: center;
+  gap: 4em;
+  align-items: flex-start;
+}
+
+.test-functionality {
+  display: flex;
+  flex-direction: column;
+  border: 2px solid rgb(21, 101, 189);
+  border-radius: 1em;
+  padding: 1em;
+  justify-content: center;
+  text-align: center;
+}
+
+.controlled-frame-container {
+  display: grid;
+  /* grid-template-columns: 1fr 1fr; */
+  grid-template-columns: 1fr;
+  margin-top: 2em;
+  gap: 1em;
+  padding: 0em 2em;
+  height: 50vh;
+}
+
+.controlled-frame-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 0em 2em;
+  gap: 1em;
+  margin-top: 1em;
+  margin-bottom: 2em;
+  justify-content: center;
+}
+
+#capture-results {
+  flex-grow: 0.5;
+
+  #captures {
+    /* width: 100%; */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    max-height: 300px;
+    height: 300px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
+    flex-direction: column;
+    margin: 16px 0px;
+    border:1px solid #ccc;
+    border-radius: 8px;
+  }
+
+  .captured-image {
+    width: 95%;
+    max-height: 200px;
+    object-fit: contain;
+    margin: 0.5em;
+    flex-grow: 1;
+  }
+}
+
+.controlled-frame-options-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1em;
+  align-items: center;
+  margin-top: 3em;
+}
+.controlled-frame-options-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+controlledframe {
+  border: 1px solid #ccc;
+}
+
+#color {
+  width: 100%;
+}
+
+/* CSS */
+button {
+  background-color: #165079;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  box-shadow: rgba(255, 255, 255, 0.4) 0 1px 0 0 inset;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  font-family: -apple-system, system-ui, "Segoe UI", "Liberation Sans",
+    sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.15385;
+  margin: 0;
+  outline: none;
+  padding: 8px 0.8em;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  vertical-align: baseline;
+  white-space: nowrap;
+}
+
+button:hover,
+button:focus {
+  background-color: #07c;
+}
+
+button:focus {
+  box-shadow: 0 0 0 4px rgba(0, 149, 255, 0.15);
+}
+
+button:active {
+  background-color: #0064bd;
+  box-shadow: none;
+}
+
+button:disabled {
+  background-color: #2c2f31;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+#accessibility-div {
+  margin-top: 2em;
+  margin-bottom: 2em;
+}
+
+.tab-container {
+  width: 94%;
+  /* max-width: 1200px; */
+  margin: 0 auto;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  /* height: 750px; */
+}
+
+.tab-bar {
+  display: flex;
+  overflow: hidden;
+  background-color: #e9e9e9;
+  border-bottom: 1px solid #ccc;
+  flex-shrink: 0;
+}
+
+.tab-link {
+  background-color: inherit;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 18px;
+  transition: background-color 0.3s;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+}
+
+.tab-link:hover {
+  background-color: #07c;
+  color: #fff;
+}
+
+.tab-link.active {
+  background-color: #0064bd;
+  font-weight: 700;
+  color: #fff;
+}
+
+.view-controls {
+  padding: 8px 12px;
+  background-color: #f1f1f1;
+  border-bottom: 1px solid #ccc;
+  text-align: left;
+  flex-shrink: 0;
+}
+
+.view-controls button {
+  padding: 6px 12px;
+  margin-left: 10px;
+  border: 1px solid #bbb;
+  border-radius: 4px;
+  background-color: #e7e7e7;
+  cursor: pointer;
+  font-weight: 500;
+  color: #333;
+}
+.view-controls button:hover {
+  background-color: #07c;
+  color: #fff;
+}
+
+.content-container {
+  padding: 10px;
+}
+
+.tab-content {
+  display: none;
+  width: 100%;
+  height: 50vh;
+  border: none;
+}
+
+.tab-container.fullscreen .tab-content {
+  height: 80vh;
+}
+
+
+@media screen and (width: 1080px) and (height: 1920px) {
+  .tab-content {
+    height: 60vh;
+  }
+}
+@media screen and (width: 1920px) and (height: 1080px) {
+  .tab-content {
+    height: 40vh;
+  }
+}
+
+.tab-container.fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  border: none;
+  border-radius: 0;
+  z-index: 9999;
+}
+
+.content-container.split-view {
+  display: flex;
+}
+.content-container.split-view .tab-content {
+  position: static;
+  width: 50%;
+  border-right: 1px solid #ccc;
+}
+.content-container.split-view .tab-content:last-of-type {
+  border-right: none;
+}

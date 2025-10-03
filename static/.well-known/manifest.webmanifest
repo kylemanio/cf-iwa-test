@@ -1,0 +1,20 @@
+{
+  "id": "/",
+  "scope": "/",
+  "start_url": "/",
+  "name": "Controlled Frame Test IWA",
+  "version": "1.0.5",
+  "permissions_policy": {
+    "cross-origin-isolated": ["self"],
+    "controlled-frame": ["self"]
+  },
+  "isolated_storage": true,
+  "icons": [
+    {
+      "src": "/icon.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 const color = document.getElementById("color");
 
-const controlledframe = document.getElementById('cf1');
+let controlledframe // initial
 // let controlledframe;
 const captures = document.getElementById("captures");
 
@@ -159,15 +159,11 @@ function addHandlers() {
     });
 
     // Navigate back.
-    // Note: The API we're basing on uses callbacks. We don't yet know when we can
-    // introduce a promises-based API, we're still evaluating that.
     document.getElementById("back").addEventListener("click", async (ev) => {
       await controlledframe.back();
     });
 
     // Navigate forward.
-    // Note: The API we're basing on uses callbacks. We don't yet know when we can
-    // introduce a promises-based API, we're still evaluating that.
     document.getElementById("forward").addEventListener("click", async (ev) => {
       await controlledframe.forward();
     });
@@ -222,6 +218,8 @@ const initTabSwitcher = () => {
 
     let isSplitView = false;
 
+    controlledframe = document.getElementById('cf1');
+
     function updateView() {
         tabContents.forEach(content => content.style.display = 'none');
 
@@ -233,19 +231,27 @@ const initTabSwitcher = () => {
             contentContainer.classList.add('split-view');
 
             const firstContent = document.getElementById(activeLink.dataset.tab);
-            if (firstContent) firstContent.style.display = 'block';
+            if (firstContent) {
+                firstContent.style.display = 'block';
+                console.log(`Controlled Frame: ${activeLink.innerHTML} is now active as the second content`)
+            }
 
             let nextLink = activeLink.nextElementSibling;
             if (!nextLink) {
                 nextLink = tabLinks[0];
             }
             const secondContent = document.getElementById(nextLink.dataset.tab);
+            console.log(`Controlled Frame: ${nextLink.innerHTML} is now active as the second content`)
             if (secondContent) secondContent.style.display = 'block';
 
         } else {
             contentContainer.classList.remove('split-view');
             const activeContent = document.getElementById(activeLink.dataset.tab);
-            if (activeContent) activeContent.style.display = 'block';
+            if (activeContent) {
+                controlledframe = activeContent;
+                console.log(`Controlled Frame: ${activeLink.innerHTML} is now active`)
+                activeContent.style.display = 'block';
+            }
         }
     }
 
@@ -253,6 +259,8 @@ const initTabSwitcher = () => {
     tabLinks.forEach(link => {
         link.addEventListener('click', (event) => {
             tabLinks.forEach(btn => btn.classList.remove('active'));
+            controlledframe = document.getElementById(event.currentTarget.dataset.tab);
+            console.log(`Controlled Frame: ${event.currentTarget.innerHTML} is now active`)
             event.currentTarget.classList.add('active');
             updateView();
         });

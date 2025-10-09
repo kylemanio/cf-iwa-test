@@ -4,20 +4,9 @@ let controlledframe // initial
 // let controlledframe;
 const captures = document.getElementById("captures");
 
-const blockCFRequests = (details) => {
-  try {
-    console.log(
-      "Controlled Frame Request: request blocked",
-      JSON.stringify(details)
-    );
-    return { cancel: true };
-  } catch (err) {
-    console.error(
-      "Controlled Frame Request: blockControlledFrameRequests err",
-      err
-    );
-  }
-};
+let interceptor;
+let blockingRequests = false;
+let modifyingRequests = false;
 
 const uninitializeControlledFrame = () => {
   if (controlledframe) {
@@ -38,6 +27,21 @@ const uninitializeControlledFrame = () => {
   document.getElementById("modify-request-headers").disabled = true;
   captures.innerHTML = "";
   // webviewAuthRequiredBtn.disabled = true
+};
+
+const blockCFRequests = (details) => {
+  try {
+    console.log(
+      "Controlled Frame Request: request blocked",
+      JSON.stringify(details)
+    );
+    return { cancel: true };
+  } catch (err) {
+    console.error(
+      "Controlled Frame Request: blockControlledFrameRequests err",
+      err
+    );
+  }
 };
 
 const modifyControlledFrameRequestHeaders = (details) => {
@@ -68,139 +72,200 @@ const modifyControlledFrameRequestHeaders = (details) => {
   }
 };
 
-const clearControlledFrameListeners = () => {
-  controlledframe.request.onBeforeSendHeaders.removeListener(
-    modifyControlledFrameRequestHeaders,
-    { urls: ["*://*/*"] },
-    ["requestHeaders", "extraHeaders"]
-  );
 
-  controlledframe.request.onBeforeRequest.removeListener(
-    blockCFRequests,
-    { urls: ["*://*/*"] },
-    ["blocking"]
+
+const cfLoadStart = (e) => {
+  console.log("Controlled Frame API: Load start: ", JSON.stringify(e));
+};
+
+const cfLoadAbort = (e) => {
+  console.log("Controlled Frame API: Load aborted: ", JSON.stringify(e));
+};
+
+const cfLoadCommit = (e) => {
+  console.log("Controlled Frame API: Load commit: ", JSON.stringify(e));
+};
+
+const cfLoadRedirect = (e) => {
+  console.log("Controlled Frame API: Load Redirect: ", JSON.stringify(e));
+};
+
+const cfConsoleMessage = (e) => {
+  console.log(
+    "Controlled Frame API: Guest page logged a message: ",
+    e.message
   );
 };
 
-let blockingRequests = false;
-let modifyingRequests = false;
+const cfPermissionRequest = (e) => {
+  if (e.permission === "media") {
+    e.request.allow();
+  }
+};
+
+const cfClose = () => {
+  console.log("Controlled Frame API: Controlled Frame closed");
+  uninitializeControlledFrame();
+};
+
+const cfExit = () => {
+  console.log("Controlled Frame API: Goodbye, world!");
+};
+
+const cfBlockRequests = (e) => {
+  console.log('Blocking request to:', e.request.url);
+  e.preventDefault();
+}
+
+const cfModifyRequestHeaders = (e) => {
+  console.log('Modifying request headers for:', e.request.url);
+  const newHeaders = new Headers(e.request.headers);
+  newHeaders.append('X-Custom-Header', 'Test');
+  e.setRequestHeaders(newHeaders);
+}
+
+const cfReload = () => {
+  console.log("Controlled Frame API: Reloading...");
+  controlledframe.reload();
+}
+
+const cfGoBack = async () => {
+  await controlledframe.back();
+}
+
+const cfGoForward = async () => {
+  await controlledframe.forward();
+}
+
+const cfExecuteScript = async () => {
+  console.log(controlledframe.webRequest);
+  // Execute JavaScript within the Controlled Frame to remove all links from
+  // <a> elements and add 'inject_script.js' to the Controlled Frame's script sources:
+  controlledframe.executeScript({
+    code: `
+        console.log("I AM ADDING SCRIPTS!")
+        const anchorTags = document.getElementsByTagName('a');
+        const h1Tags = document.getElementsByTagName("h1");
+        for (const tag of anchorTags){
+            tag.href = 'https://www.google.com';
+            tag.innerHTML = "Clicking me will redirect you to google"
+        }
+        for (const tag of h1Tags){
+            tag.innerHTML = "Executed a script!"
+        }
+        `,
+  });
+}
+
+const cfCapture = async () => {
+  const result = await controlledframe.captureVisibleRegion({
+    format: "jpeg",
+    quality: 100,
+  });
+
+  if (result) {
+    const capturedImgElement = document.createElement("img");
+    capturedImgElement.src = result;
+    capturedImgElement.className = "captured-image";
+    captures.appendChild(capturedImgElement);
+  }
+}
+
+
+const clearControlledFrameListeners = () => {
+  // controlledframe.request.onBeforeSendHeaders.removeListener(
+  //   modifyControlledFrameRequestHeaders,
+  //   { urls: ["*://*/*"] },
+  //   ["requestHeaders", "extraHeaders"]
+  // );
+
+  // controlledframe.request.onBeforeRequest.removeListener(
+  //   blockCFRequests,
+  //   { urls: ["*://*/*"] },
+  //   ["blocking"]
+  // );
+
+
+  controlledframe.removeEventListener("loadstart", cfLoadStart);
+  controlledframe.removeEventListener("loadabort", cfLoadAbort);
+  controlledframe.removeEventListener("loadcommit", cfLoadCommit);
+  controlledframe.removeEventListener("loadredirect", cfLoadRedirect);
+  controlledframe.removeEventListener("consolemessage", cfConsoleMessage);
+  controlledframe.removeEventListener("permissionrequest", cfPermissionRequest);
+  controlledframe.removeEventListener("close", cfClose);
+  controlledframe.removeEventListener("exit", cfExit);
+
+  if (interceptor) {
+    interceptor.removeEventListener("beforerequest", cfBlockRequests);
+    interceptor.removeEventListener("beforesendheaders", cfModifyRequestHeaders);
+    interceptor = null;
+  }
+
+  document.getElementById("reload-cf").removeEventListener("click", cfReload);
+  document.getElementById("back").removeEventListener("click", cfGoBack);
+  document.getElementById("forward").removeEventListener("click", cfGoForward);
+  document.getElementById("capture").removeEventListener("click", cfCapture);
+  document.getElementById("execute").removeEventListener("click", cfExecuteScript);
+  
+};
+
 
 function addHandlers() {
-  // controlledframe.navigate("https://example.com");
-
   try {
-    controlledframe.addEventListener("loadstart", (e) => {
-      console.log("Controlled Frame API: Load start: ", JSON.stringify(e));
-    });
+    controlledframe.addEventListener("loadstart", cfLoadStart);
+    controlledframe.addEventListener("loadabort", cfLoadAbort);
+    controlledframe.addEventListener("loadcommit", cfLoadCommit);
+    controlledframe.addEventListener("loadredirect", cfLoadRedirect);
+    controlledframe.addEventListener("consolemessage", cfConsoleMessage);
+    controlledframe.addEventListener("permissionrequest", cfPermissionRequest);
+    controlledframe.addEventListener("close", cfClose);
+    controlledframe.addEventListener("exit", cfExit);
 
-    controlledframe.addEventListener("loadabort", (e) => {
-      console.log("Controlled Frame API: Load aborted: ", JSON.stringify(e));
-    });
-
-    controlledframe.addEventListener("loadcommit", (e) => {
-      console.log("Controlled Frame API: Load commit: ", JSON.stringify(e));
-    });
-
-    controlledframe.addEventListener("loadredirect", (e) => {
-      console.log("Controlled Frame API: Load Redirect: ", JSON.stringify(e));
-    });
-
-    controlledframe.addEventListener("consolemessage", function (e) {
-      console.log(
-        "Controlled Frame API: Guest page logged a message: ",
-        e.message
-      );
-    });
-
-    controlledframe.addEventListener("permissionrequest", function (e) {
-      if (e.permission === "media") {
-        e.request.allow();
-      }
-    });
-
-    controlledframe.addEventListener("close", function () {
-      console.log("Controlled Frame API: Controlled Frame closed");
-      uninitializeControlledFrame();
-    });
-
-    controlledframe.addEventListener("exit", function () {
-      console.log("Controlled Frame API: Goodbye, world!");
-    });
-
+    
     document
       .getElementById("block-requests")
       .addEventListener("click", (ev) => {
+
         document.getElementById("modify-request-headers").disabled = false;
         document.getElementById("block-requests").disabled = true;
-        controlledframe.request.onBeforeRequest.addListener(
-          blockCFRequests,
-          { urls: ["*://*/*"] },
-          ["blocking"]
-        );
+
+        interceptor = controlledframe.request.createWebRequestInterceptor({
+          urlPatterns: ["*://*/*"],
+          blocking: true,
+          includeHeaders: "all",
+        });
+        interceptor.addEventListener("beforerequest", cfBlockRequests);
+
       });
 
     document
       .getElementById("modify-request-headers")
       .addEventListener("click", (ev) => {
+
         document.getElementById("modify-request-headers").disabled = true;
         document.getElementById("block-requests").disabled = false;
-        controlledframe.request.onBeforeSendHeaders.addListener(
-          modifyControlledFrameRequestHeaders,
-          { urls: ["*://*/*"] },
-          ["blocking"]
-        );
+
+        interceptor = controlledframe.request.createWebRequestInterceptor({
+          urlPatterns: ["*://*/*"],
+          blocking: false,
+          includeHeaders: "all",
+        });
+        interceptor.addEventListener("beforesendheaders", cfModifyRequestHeaders);
+
       });
 
 
     // Reload CF.
-    document.getElementById("reload-cf").addEventListener("click", (ev) => {
-      console.log("Controlled Frame API: Reloading...");
-      controlledframe.reload();
-    });
+    document.getElementById("reload-cf").addEventListener("click", cfReload);
 
     // Navigate back.
-    document.getElementById("back").addEventListener("click", async (ev) => {
-      await controlledframe.back();
-    });
+    document.getElementById("back").addEventListener("click", cfGoBack);
 
     // Navigate forward.
-    document.getElementById("forward").addEventListener("click", async (ev) => {
-      await controlledframe.forward();
-    });
+    document.getElementById("forward").addEventListener("click", cfGoForward);
 
-    document.getElementById("capture").addEventListener("click", async (ev) => {
-      const result = await controlledframe.captureVisibleRegion({
-        format: "jpeg",
-        quality: 100,
-      });
-
-      if (result) {
-        const capturedImgElement = document.createElement("img");
-        capturedImgElement.src = result;
-        capturedImgElement.className = "captured-image";
-        captures.appendChild(capturedImgElement);
-      }
-    });
-    document.getElementById("execute").addEventListener("click", async (ev) => {
-      console.log(controlledframe.webRequest);
-      // Execute JavaScript within the Controlled Frame to remove all links from
-      // <a> elements and add 'inject_script.js' to the Controlled Frame's script sources:
-      controlledframe.executeScript({
-        code: `
-            console.log("I AM ADDING SCRIPTS!")
-            const anchorTags = document.getElementsByTagName('a');
-            const h1Tags = document.getElementsByTagName("h1");
-            for (const tag of anchorTags){
-                tag.href = 'https://www.google.com';
-                tag.innerHTML = "Clicking me will redirect you to google"
-            }
-            for (const tag of h1Tags){
-                tag.innerHTML = "Executed a script!"
-            }
-            `,
-      });
-
-    });
+    document.getElementById("capture").addEventListener("click", cfCapture);
+    document.getElementById("execute").addEventListener("click", cfExecuteScript);
 
   } catch (err) {
     console.error("addHandlers err", err);
@@ -248,9 +313,11 @@ const initTabSwitcher = () => {
             contentContainer.classList.remove('split-view');
             const activeContent = document.getElementById(activeLink.dataset.tab);
             if (activeContent) {
-                controlledframe = activeContent;
-                console.log(`Controlled Frame: ${activeLink.innerHTML} is now active`)
-                activeContent.style.display = 'block';
+              clearControlledFrameListeners();
+              controlledframe = activeContent;
+              addHandlers()
+              console.log(`Controlled Frame: ${activeLink.innerHTML} is now active`)
+              activeContent.style.display = 'block';
             }
         }
     }
@@ -259,7 +326,9 @@ const initTabSwitcher = () => {
     tabLinks.forEach(link => {
         link.addEventListener('click', (event) => {
             tabLinks.forEach(btn => btn.classList.remove('active'));
+            clearControlledFrameListeners();
             controlledframe = document.getElementById(event.currentTarget.dataset.tab);
+            addHandlers()
             console.log(`Controlled Frame: ${event.currentTarget.innerHTML} is now active`)
             event.currentTarget.classList.add('active');
             updateView();

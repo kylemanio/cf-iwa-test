@@ -129,7 +129,7 @@ select {
   border:1px solid #ccc;
   border-radius: 8px;
   height: 300px;
-  /* width: 80vw; */
+  width: 40vw;
   overflow: auto;
 }
 
@@ -174,7 +174,7 @@ strong {
 
 .controlled-frame-options {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: auto auto;
   padding: 0em 2em;
   gap: 1em;
   margin-top: 1em;
@@ -183,8 +183,7 @@ strong {
 }
 
 #capture-results {
-  flex-grow: 0.5;
-
+  width: 40vw;
   #captures {
     /* width: 100%; */
     display: flex;

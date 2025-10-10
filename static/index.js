@@ -29,49 +29,6 @@ const uninitializeControlledFrame = () => {
   // webviewAuthRequiredBtn.disabled = true
 };
 
-const blockCFRequests = (details) => {
-  try {
-    console.log(
-      "Controlled Frame Request: request blocked",
-      JSON.stringify(details)
-    );
-    return { cancel: true };
-  } catch (err) {
-    console.error(
-      "Controlled Frame Request: blockControlledFrameRequests err",
-      err
-    );
-  }
-};
-
-const modifyControlledFrameRequestHeaders = (details) => {
-  try {
-    if (details.method === "OPTIONS") return;
-
-    // Delete Authorization Header
-    for (var i = 0; i < details.requestHeaders.length; ++i) {
-      if (details.requestHeaders[i].name === "Authorization") {
-        details.requestHeaders.splice(i, 1);
-        break;
-      }
-    }
-    details.requestHeaders.push({
-      name: "Content-Type",
-      value: "application/x-www-form-urlencoded",
-    });
-    console.log(
-      "ControlledFrame Request: headers modified!",
-      JSON.stringify(details)
-    );
-    return { requestHeaders: details.requestHeaders };
-  } catch (err) {
-    console.error(
-      "ControlledFrame Request: modifyControlledFrameRequestHeaders err",
-      err
-    );
-  }
-};
-
 
 
 const cfLoadStart = (e) => {

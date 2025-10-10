@@ -3,7 +3,7 @@
   "scope": "/",
   "start_url": "/",
   "name": "Controlled Frame Test IWA",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "permissions_policy": {
     "cross-origin-isolated": ["self"],
     "controlled-frame": ["self"]

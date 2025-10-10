@@ -13,7 +13,7 @@
     "dotenv": "^16.3.1"
   },
   "name": "cf-iwa-test",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "main": "webpack.config.js",
   "author": "msw@chromium.org",
   "license": "Apache-2.0",
